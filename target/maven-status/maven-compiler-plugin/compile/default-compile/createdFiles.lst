@@ -1,0 +1,6 @@
+br/com/inmetrics/desafiokernel/AppConfig.class
+br/com/inmetrics/desafiokernel/AppConfig$JerseyConfig.class
+br/com/inmetrics/desafiokernel/services/LogServices.class
+br/com/inmetrics/desafiokernel/services/BucketService.class
+br/com/inmetrics/desafiokernel/controllers/BucketController.class
+br/com/inmetrics/desafiokernel/App.class
