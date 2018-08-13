@@ -9,13 +9,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.AmazonServiceException;
-import com.amazonaws.ResponseMetadata;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 @Service
@@ -32,6 +32,16 @@ public class BucketService {
 		List<S3ObjectSummary> s3ObjectSummaries = objectListing.getObjectSummaries();
 	
 		return s3ObjectSummaries;
+	}
+	
+	public String rename(S3ObjectSummary object) {
+		s3client.copyObject(
+				  bucketName, 
+				  "picture/pic.png", 
+				  bucketName, 
+				  "document/picture.png"
+				);
+		return "changed";
 	}
 
 	public String save(MultipartFile file) {
@@ -54,6 +64,13 @@ public class BucketService {
 			e.printStackTrace();
 		}
 		return file.getName() + "uploaded";
+	}
+
+	public S3Object findById(String key) {
+		
+		return s3client.getObject(bucketName, key);
+		
+		
 	}
 	
 }
