@@ -1,0 +1,10 @@
+<div class="col-md-6">
+  <h2 class="text-center">Upload File</h2>
+<form>
+  <div class="form-group">
+    <input [(ngModel)]="bucket.key" placeholder="filename" name="key" class="form-control" id="key">
+  </div>
+
+  <button class="btn btn-success" (click)="uploadFile()">Upload</button>
+</form>
+</div>

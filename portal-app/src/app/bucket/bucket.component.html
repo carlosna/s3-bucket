@@ -1,0 +1,26 @@
+<head>
+  <link data-require="bootstrap-css@3.1.1" data-semver="3.1.1" rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
+  <script data-require="angular.js@1.3.0" data-semver="1.3.0" src="https://code.angularjs.org/1.3.0/angular.js"></script>
+  <script data-require="jquery@*" data-semver="2.0.3" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+  <script data-require="bootstrap@3.1.1" data-semver="3.1.1" src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+  <script src="dirPagination.js"></script>
+</head>
+
+<div class="col-md-6">
+<h2> Bucket Details</h2>
+
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th>key</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let bucket of buckets | paginate: { itemsPerPage: 10, currentPage: p }">
+    <td>{{bucket.key}}</td>
+    <td><button class="btn btn-danger" (click)="renameObject(object)"> Rename Object</button></td>
+  </tr>
+  </tbody>
+</table>
+<pagination-controls (pageChange)="p = $event"></pagination-controls>
+</div>
