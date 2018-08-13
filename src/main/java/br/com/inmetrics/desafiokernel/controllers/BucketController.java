@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import br.com.inmetrics.desafiokernel.services.BucketService;
 
@@ -25,5 +28,11 @@ public class BucketController {
 	@GetMapping
 	public List<S3ObjectSummary> list() throws IOException {
 		return service.list();
-	}	
+	}
+	
+	@RequestMapping(value = "/upload", method = RequestMethod.POST)
+	public @ResponseBody String handleFileUpload(
+			@RequestParam(value="file") MultipartFile file) throws IOException {
+		return service.save(file);
+	}
 }

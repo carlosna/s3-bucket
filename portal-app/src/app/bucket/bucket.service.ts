@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { map } from 'rxjs/operators';
-
+import { HttpClient, HttpRequest, HttpHeaders, HttpEvent } from '@angular/common/http';
+import {Observable} from 'rxjs/Observable';
 import { Bucket } from '../models/bucket.model';
 
 
@@ -15,22 +14,29 @@ export class BucketService {
   constructor(private http:HttpClient) {}
 
   private bucketUrl = 'http://localhost:8080/api';
-//	private bucketUrl = '/api';
-
-//  public getObjects() {
-//    return this.http.get<Object[]>(this.bucketUrl);
-//  }
 
   public getObjects(){
      return this.http.get<Bucket[]>(this.bucketUrl);
   }
 
-  public renameObject(object) {
-    return this.http.put(this.bucketUrl, object.key);
+  public renameObject(bucket) {
+    return this.http.put(this.bucketUrl, bucket.key);
   }
 
-  public uploadFile(object) {
-    return this.http.post<Bucket>(this.bucketUrl, object);
+  public uploadFile(file: File): Observable<HttpEvent<{}>> {
+    let formdata: FormData = new FormData();
+ 
+    formdata.append('file', file);
+ 
+    const req = new HttpRequest('POST', this.bucketUrl + "/upload", formdata, {
+      reportProgress: true,
+      responseType: 'text'
+    });
+ 
+    return this.http.request(req);
   }
+  // public uploadFile(bucket) {
+  //   return this.http.post<Bucket>(this.bucketUrl + "/upload", bucket.key);
+  // }
 
 }
