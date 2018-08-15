@@ -1,18 +1,17 @@
 FROM node:8.11.3
 
-RUN mkdir /opt/portal-app
-WORKDIR /opt/portal-app
-
+ENV APP_ROOT /opt/portal-app
 ENV PATH /opt/portal-app/node_modules/.bin:$PATH
 
-# install and cache app dependencies
-COPY package.json /opt/portal-app/package.json
-RUN npm install
-RUN npm install -g @angular/cli@1.7.1
+RUN mkdir $APP_ROOT
+WORKDIR $APP_ROOT
+
+RUN npm i -g @angular/cli \
+    && npm i -g typescript
 
 # add app
 COPY . /opt/portal-app
+	
+EXPOSE 4200
 
-# start app
-CMD ng serve
-
+CMD ng serve --host 0.0.0.0

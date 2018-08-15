@@ -19,15 +19,17 @@ version: '3'
 services:
   app_rest:
     image: pelezinho/desafiokernel
-    ports: "8080:8080"
     networks:
-      - suse
-    restart: on-failure
+      - default
+    ports:
+      - "8080:8080"
+
   angular:
     image: angular
-    ports: "4200:4200"
     networks:
-      - suse
-    restart: on-failure
+      - default
+    ports: 
+      - "4200:4200"
+
 networks:
-  suse:
+  default:
