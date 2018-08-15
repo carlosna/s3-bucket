@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit, ViewEncapsulation} from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA, MatInputModule} from "@angular/material";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import { Bucket } from '../models/bucket.model';
+//import { Bucket } from '../models/bucket.model';
 
 @Component({
     selector: 'dialog-box',

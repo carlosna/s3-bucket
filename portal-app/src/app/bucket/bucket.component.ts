@@ -17,7 +17,6 @@ export class BucketComponent implements OnInit {
   buckets: Bucket[];
   dialogRef: MatDialogRef<DialogComponent>
   key: string;
-  old_key: string;
 
   constructor(private router: Router, 
               private bucketService: BucketService, 
@@ -39,9 +38,7 @@ export class BucketComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
-      this.key = result;
-      this.old_key = bucket.key;
-      this.renameObject(result, this.old_key)
+      this.renameObject(this.key, result)
     });
     
  }  
@@ -53,11 +50,11 @@ export class BucketComponent implements OnInit {
       });
   };
 
-  renameObject(bucket: Bucket, old_key: string): void {
-    this.bucketService.renameObject(bucket)
-      .subscribe( data => {
-        this.buckets = this.buckets.filter(u => u !== bucket);
-      })
+  renameObject(key, bucket: Bucket): void {
+    this.bucketService.renameObject(key, bucket)
+      // .subscribe( data => {
+      //   this.buckets = this.buckets.filter(u => u !== bucket);
+      // })
   };
 
 }

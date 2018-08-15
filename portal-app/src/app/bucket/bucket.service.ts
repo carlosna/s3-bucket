@@ -19,8 +19,8 @@ export class BucketService {
      return this.http.get<Bucket[]>(this.bucketUrl);
   }
 
-  public renameObject(bucket) {
-    return this.http.put(this.bucketUrl, bucket.key);
+  public renameObject(bucket, key) {
+    return this.http.put(this.bucketUrl + "/key?filename=" + key, bucket);
   }
 
   public uploadFile(file: File): Observable<HttpEvent<{}>> {
