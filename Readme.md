@@ -9,12 +9,11 @@ Para Executar esse projeto é necessário ter instalado as seguintes ferramentas
 
 O arquivo de configuração está em:
 
-  - src/
-    |- main/
-    |  |- resources
-    |  |  |- application.xml
-
-Depois que instalar as ferramentas execute na pasta raiz do projeto:
+s3-bucket/
+  |- src/
+  |  |- main/
+  |  |  |- resources
+  |  |  |  |- application.xml
 
 $ mvn package
 
