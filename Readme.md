@@ -9,11 +9,12 @@ Para Executar esse projeto é necessário ter instalado as seguintes ferramentas
 
 O arquivo de configuração está em:
 
-s3-bucket/
+<pre><code>s3-bucket/
   |- src/
   |  |- main/
   |  |  |- resources
   |  |  |  |- application.xml
+</code></pre>
 
 $ mvn package
 
