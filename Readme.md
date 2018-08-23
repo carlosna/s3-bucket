@@ -6,7 +6,6 @@ Para Executar esse projeto é necessário ter instalado as seguintes ferramentas
 
     Java 8 JDK
     Maven 3
-    NodeJS 8
 
 O arquivo de configuração está em:
 
