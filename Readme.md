@@ -19,7 +19,7 @@ Depois que instalar as ferramentas execute na pasta raiz do projeto:
 
 $ mvn package
 
-Execute ”$ mvn package” para verificar, testar e empacotar o codigo em um JAR. Além do JAR é feito o build da imagem no docker
+Execute ”$ mvn package” para empacotar o codigo em um JAR. Além do JAR é feito o build da imagem no docker através de plugin.
 
 O projeto possui dois Dockerfile. Após rodar o maven, é necessário entrar no diretório do portal-app e gerar outra imagem no docker
 para o frontend em Angular.
