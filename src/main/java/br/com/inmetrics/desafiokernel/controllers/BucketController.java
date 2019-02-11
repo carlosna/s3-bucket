@@ -29,7 +29,7 @@ public class BucketController {
 		return service.list();
 	}
 
-	@RequestMapping(value = "/page")
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public @ResponseBody List<S3ObjectSummary> findPage(
 			@RequestParam("page") int page){
 
@@ -39,7 +39,7 @@ public class BucketController {
 
 	}
 
-	@RequestMapping(path = {"/findByKey"})
+	@RequestMapping(value = "/findByKey", method = RequestMethod.GET)
 	public ResponseEntity<S3Object> findOne(@RequestParam("key") S3ObjectVO key) {
 		S3Object object = service.findById(key.getName());
 		if (object.getKey().isEmpty()) {
@@ -48,7 +48,7 @@ public class BucketController {
 		return ResponseEntity.ok().body(object);
 	}
 	
-	@RequestMapping(value = {"/filename"}, method = RequestMethod.PUT)
+	@RequestMapping(value = "/filename", method = RequestMethod.PUT)
 	public ResponseEntity<Void> rename(@RequestBody String name, @PathVariable String oldname) {
 		
 		service.rename(oldname, name);
