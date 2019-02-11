@@ -1,27 +1,20 @@
 package br.com.inmetrics.desafiokernel.services;
 
-import java.io.File;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.multipart.MultipartFile;
-
+import br.com.inmetrics.desafiokernel.util.PaginationS3Objects;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CopyObjectRequest;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.amazonaws.services.s3.model.ListObjectsRequest;
-import com.amazonaws.services.s3.model.ObjectListing;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.amazonaws.services.s3.model.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import br.com.inmetrics.desafiokernel.vo.S3ObjectVO;
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class BucketService {
@@ -31,9 +24,13 @@ public class BucketService {
 	
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucketName;
-	
+
+	private ObjectListing listing(){
+		return s3client.listObjects(new ListObjectsRequest().withBucketName(bucketName));
+	}
+
 	public List<S3ObjectSummary> list() {
-		ObjectListing objectListing = s3client.listObjects(new ListObjectsRequest().withBucketName(bucketName));		
+		ObjectListing objectListing = listing();
 		List<S3ObjectSummary> s3ObjectSummaries = objectListing.getObjectSummaries();
 	
 		return s3ObjectSummaries;
@@ -61,8 +58,10 @@ public class BucketService {
 		return findById(destinationKey);
 	}
 
-	public String save(MultipartFile file) {
-		
+	public URI save(MultipartFile file) throws URISyntaxException {
+
+		String key = file.getOriginalFilename();
+
 		try {
 			s3client.putObject(bucketName, file.getOriginalFilename(), "Upload Object");
 			PutObjectRequest request = new PutObjectRequest(bucketName, 
@@ -79,7 +78,7 @@ public class BucketService {
 		} catch (SdkClientException e) {
 			e.printStackTrace();
 		}
-		return file.getName() + "uploaded";
+		return s3client.getUrl(bucketName, key).toURI();
 	}
 
 	public S3Object findById(String key) {
@@ -87,7 +86,15 @@ public class BucketService {
 		return s3client.getObject(bucketName, key);
 				
 	}
-	
-	
-	
+
+
+	public ArrayList<S3ObjectSummary> paginating(int currentPage) {
+		ObjectListing objectListing = listing();
+		List<S3ObjectSummary> s3ObjectSummaries = objectListing.getObjectSummaries();
+		PaginationS3Objects<S3ObjectSummary> page = new PaginationS3Objects<S3ObjectSummary>(s3ObjectSummaries, currentPage);
+
+		return (ArrayList<S3ObjectSummary>) page.iterator();
+
+
+	}
 }

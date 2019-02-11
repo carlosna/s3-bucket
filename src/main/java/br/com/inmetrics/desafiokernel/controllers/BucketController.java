@@ -1,26 +1,19 @@
 package br.com.inmetrics.desafiokernel.controllers;
 
-import java.io.IOException;
-import java.util.List;
+import br.com.inmetrics.desafiokernel.services.BucketService;
+import br.com.inmetrics.desafiokernel.vo.S3ObjectVO;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.s3.model.S3ObjectSummary;
-import br.com.inmetrics.desafiokernel.services.BucketService;
-import br.com.inmetrics.desafiokernel.vo.S3ObjectVO;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
 
 
 @CrossOrigin(origins = "*")
@@ -31,31 +24,42 @@ public class BucketController {
 	@Autowired
 	private BucketService service;
 	
-	@GetMapping
-	public List<S3ObjectSummary> list() throws IOException {
+	@RequestMapping
+	public @ResponseBody List<S3ObjectSummary> list() throws IOException {
 		return service.list();
 	}
-	
+
+	@RequestMapping(value = "/page")
+	public @ResponseBody List<S3ObjectSummary> findPage(
+			@RequestParam("page") int page){
+
+		List<S3ObjectSummary> result = service.paginating(page);
+
+		return (List<S3ObjectSummary>) ResponseEntity.ok().body(result);
+
+	}
+
 	@RequestMapping(path = {"/findByKey"})
 	public ResponseEntity<S3Object> findOne(@RequestParam("key") S3ObjectVO key) {
 		S3Object object = service.findById(key.getName());
 		if (object.getKey().isEmpty()) {
 			return new ResponseEntity<S3Object>(HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<S3Object>(object, HttpStatus.OK);
+		return ResponseEntity.ok().body(object);
 	}
 	
-	@PutMapping(path = {"/key"})
-	public HttpStatus rename(@RequestParam("filename") String oldname, @RequestBody String name) {
+	@RequestMapping(value = {"/filename"}, method = RequestMethod.PUT)
+	public ResponseEntity<Void> rename(@RequestBody String name, @PathVariable String oldname) {
 		
 		service.rename(oldname, name);
 		
-		return HttpStatus.OK;
+		return ResponseEntity.noContent().build();
 	}
 	
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
-	public @ResponseBody String handleFileUpload(
-			@RequestParam(value="file") MultipartFile file) throws IOException {
-		return service.save(file);
+	public ResponseEntity<Void> handleFileUpload(
+			@RequestParam(value="file") MultipartFile file) throws URISyntaxException {
+		URI uri = service.save(file);
+		return ResponseEntity.created(uri).build();
 	}
 }

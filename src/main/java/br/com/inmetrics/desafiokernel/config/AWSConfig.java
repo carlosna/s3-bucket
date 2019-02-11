@@ -1,4 +1,4 @@
-package br.com.inmetrics.desafiokernel;
+package br.com.inmetrics.desafiokernel.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +11,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
  
 @Configuration
-public class AppConfig {
+public class AWSConfig {
 	
 	@Value("${cloud.aws.credentials.accessKey}")
 	private String accessKey;
