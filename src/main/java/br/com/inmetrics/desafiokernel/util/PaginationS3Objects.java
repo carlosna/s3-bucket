@@ -1,5 +1,9 @@
 package br.com.inmetrics.desafiokernel.util;
 
+import br.com.inmetrics.desafiokernel.vo.S3ObjectVO;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
+import org.springframework.beans.support.PagedListHolder;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -16,6 +20,13 @@ public class PaginationS3Objects<T> implements Iterable<T> {
 
     private List<T> getItems() {
         return list.subList(PAGING_SIZE * (currentPage-1), PAGING_SIZE * currentPage);
+    }
+
+    public List<S3ObjectVO> pagedList(int page){
+        PagedListHolder pagedListHolder = new PagedListHolder(list);
+        pagedListHolder.setPageSize(PAGING_SIZE);
+        pagedListHolder.setPage(page);
+        return pagedListHolder.getPageList();
     }
 
     @Override

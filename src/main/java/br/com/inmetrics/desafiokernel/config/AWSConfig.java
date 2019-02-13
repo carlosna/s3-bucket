@@ -32,7 +32,7 @@ public class AWSConfig {
 		AmazonS3 amazonS3Client = AmazonS3ClientBuilder
 				  .standard()
 				  .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
-				  .withRegion(Regions.fromName("us-east-1"))
+				  .withRegion(Regions.fromName(region))
 				  .build();
 		return (AmazonS3Client) amazonS3Client;
 	}

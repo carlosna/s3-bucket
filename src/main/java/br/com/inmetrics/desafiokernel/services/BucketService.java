@@ -1,6 +1,7 @@
 package br.com.inmetrics.desafiokernel.services;
 
 import br.com.inmetrics.desafiokernel.util.PaginationS3Objects;
+import br.com.inmetrics.desafiokernel.vo.S3ObjectVO;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
@@ -25,15 +26,20 @@ public class BucketService {
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucketName;
 
-	private ObjectListing listing(){
-		return s3client.listObjects(new ListObjectsRequest().withBucketName(bucketName));
+	private List<S3ObjectVO> files = new ArrayList<>();
+
+	private void pickObjects(){
+		files.clear();
+		ObjectListing objectListing = s3client.listObjects(new ListObjectsRequest().withBucketName(bucketName));
+		objectListing.getObjectSummaries().stream().
+				forEach(s3Ojbect -> files.add(new S3ObjectVO(s3Ojbect.getKey(),
+											  s3Ojbect.getSize(),
+						                      s3Ojbect.getLastModified())));
 	}
 
-	public List<S3ObjectSummary> list() {
-		ObjectListing objectListing = listing();
-		List<S3ObjectSummary> s3ObjectSummaries = objectListing.getObjectSummaries();
-	
-		return s3ObjectSummaries;
+	public List<S3ObjectVO> list() {
+		pickObjects();
+		return this.files;
 	}
 	
 	public S3Object rename(String sourceKey, String destinationKey) {
@@ -88,12 +94,14 @@ public class BucketService {
 	}
 
 
-	public ArrayList<S3ObjectSummary> paginating(int currentPage) {
-		ObjectListing objectListing = listing();
-		List<S3ObjectSummary> s3ObjectSummaries = objectListing.getObjectSummaries();
-		PaginationS3Objects<S3ObjectSummary> page = new PaginationS3Objects<S3ObjectSummary>(s3ObjectSummaries, currentPage);
+	public List<S3ObjectVO> paginating(int currentPage) {
+		pickObjects();
+		//PaginationS3Objects<S3ObjectSummary> page = new PaginationS3Objects<S3ObjectSummary>(s3ObjectSummaries, currentPage);
+		PaginationS3Objects<S3ObjectVO> page = new PaginationS3Objects<S3ObjectVO>(this.files, currentPage);
 
-		return (ArrayList<S3ObjectSummary>) page.iterator();
+		return page.pagedList(currentPage);
+
+		//return (ArrayList<S3ObjectSummary>) page.iterator();
 
 
 	}
