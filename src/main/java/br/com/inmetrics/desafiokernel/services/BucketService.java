@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -26,19 +27,19 @@ public class BucketService {
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucketName;
 
-	private List<S3ObjectVO> files = new ArrayList<>();
+	private static List<S3ObjectVO> files = new ArrayList<>();
 
+	@PostConstruct
 	private void pickObjects(){
 		files.clear();
 		ObjectListing objectListing = s3client.listObjects(new ListObjectsRequest().withBucketName(bucketName));
-		objectListing.getObjectSummaries().stream().
+		objectListing.getObjectSummaries().
 				forEach(s3Ojbect -> files.add(new S3ObjectVO(s3Ojbect.getKey(),
 											  s3Ojbect.getSize(),
 						                      s3Ojbect.getLastModified())));
 	}
 
 	public List<S3ObjectVO> list() {
-		pickObjects();
 		return this.files;
 	}
 	
@@ -95,7 +96,6 @@ public class BucketService {
 
 
 	public List<S3ObjectVO> paginating(int currentPage) {
-		pickObjects();
 		//PaginationS3Objects<S3ObjectSummary> page = new PaginationS3Objects<S3ObjectSummary>(s3ObjectSummaries, currentPage);
 		PaginationS3Objects<S3ObjectVO> page = new PaginationS3Objects<S3ObjectVO>(this.files, currentPage);
 
