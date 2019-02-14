@@ -30,7 +30,7 @@ public class BucketService {
 	private static List<S3ObjectVO> files = new ArrayList<>();
 
 	@PostConstruct
-	private void pickObjects(){
+	private void init(){
 		files.clear();
 		ObjectListing objectListing = s3client.listObjects(new ListObjectsRequest().withBucketName(bucketName));
 		objectListing.getObjectSummaries().
@@ -93,7 +93,6 @@ public class BucketService {
 		return s3client.getObject(bucketName, key);
 				
 	}
-
 
 	public List<S3ObjectVO> paginating(int currentPage) {
 		//PaginationS3Objects<S3ObjectSummary> page = new PaginationS3Objects<S3ObjectSummary>(s3ObjectSummaries, currentPage);
