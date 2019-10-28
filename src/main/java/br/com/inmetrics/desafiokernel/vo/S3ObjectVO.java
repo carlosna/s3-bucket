@@ -12,10 +12,6 @@ public class S3ObjectVO implements Serializable {
 	@JsonFormat(pattern = "dd/MM/YYYY HH:mm:ss")
 	private Date lastModified;
 
-	public S3ObjectVO(String name) {
-		this.name = name;
-	}
-
 	public S3ObjectVO(String name, Long size, Date lastModified) {
 		this.name = name;
 		this.lastModified = lastModified;

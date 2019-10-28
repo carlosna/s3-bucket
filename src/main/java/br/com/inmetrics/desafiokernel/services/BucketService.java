@@ -6,12 +6,17 @@ import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.*;
+import org.glassfish.jersey.process.internal.RequestScoped;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.config.ScheduledTask;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -19,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequestScoped
 public class BucketService {
 
 	@Autowired 
@@ -27,10 +33,13 @@ public class BucketService {
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucketName;
 
-	private static List<S3ObjectVO> files = new ArrayList<>();
+	private List<S3ObjectVO> files = new ArrayList<>();
+	private int tamanho = files.size();
 
+	@Scheduled(fixedDelay = 10L * 1000L, initialDelay = 0)
 	@PostConstruct
-	private void init(){
+	protected void init(){
+
 		files.clear();
 		ObjectListing objectListing = s3client.listObjects(new ListObjectsRequest().withBucketName(bucketName));
 		objectListing.getObjectSummaries().
@@ -39,7 +48,13 @@ public class BucketService {
 						                      s3Ojbect.getLastModified())));
 	}
 
+	@PreDestroy
+	private void destroy(){
+		files.clear();
+	}
+
 	public List<S3ObjectVO> list() {
+
 		return this.files;
 	}
 	

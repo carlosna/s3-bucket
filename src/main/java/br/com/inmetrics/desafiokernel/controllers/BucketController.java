@@ -1,11 +1,8 @@
 package br.com.inmetrics.desafiokernel.controllers;
 
 import br.com.inmetrics.desafiokernel.services.BucketService;
-import br.com.inmetrics.desafiokernel.util.PaginationS3Objects;
 import br.com.inmetrics.desafiokernel.vo.S3ObjectVO;
-import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.s3.model.S3ObjectSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,12 +41,15 @@ public class BucketController {
 	@RequestMapping(value = "/findByKey", method = RequestMethod.GET)
 	public ResponseEntity<S3ObjectVO> findOne(@RequestParam("key") String key) {
 		S3Object object = service.findById(key);
-		S3ObjectVO result = new S3ObjectVO(object.getKey(),
-				                           object.getObjectMetadata().getContentLength(),
-				                           object.getObjectMetadata().getLastModified());
+
 		if (object.getKey().isEmpty()) {
 			return new ResponseEntity<S3ObjectVO>(HttpStatus.NOT_FOUND);
 		}
+
+		S3ObjectVO result = new S3ObjectVO(object.getKey(),
+				object.getObjectMetadata().getContentLength(),
+				object.getObjectMetadata().getLastModified());
+
 		return ResponseEntity.ok().body(result);
 	}
 	

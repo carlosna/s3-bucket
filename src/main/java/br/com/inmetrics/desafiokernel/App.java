@@ -4,9 +4,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableAsync
+@EnableScheduling
 @ComponentScan(basePackages = "br.com.inmetrics.desafiokernel.controllers, br.com.inmetrics.desafiokernel.services, br.com.inmetrics.desafiokernel.aws, br.com.inmetrics.desafiokernel")
 public class App 
 {
