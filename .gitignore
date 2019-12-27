@@ -21,3 +21,5 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+portal-app/node_modules/
+portal-app/e2e/
